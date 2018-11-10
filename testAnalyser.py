@@ -1,6 +1,7 @@
 #Import libraries
 import matplotlib.pyplot as plt
 import pandas as pd
+from datetime import datetime
 
 #initiate class
 class testAnalyzer():
@@ -49,7 +50,7 @@ class testAnalyzer():
         self.balances = pd.DataFrame(columns=['Capital'])
         self.prices = pd.DataFrame(columns=['Price'])
 
-    def addToAnalysis(self,_signal,_price ):
+    def addToAnalysis(self,_signal,_price, _time):
 
         if self.FirstPrice == 0:
             self.FirstPrice = _price
@@ -68,14 +69,14 @@ class testAnalyzer():
 
             self.Capital = 0;
 
-            print "::::::::::::::::::::::::::::::::::::BUY " + str(_price) 
+            print "::::::::::::::::::::::::::::::::::::BUY " + str(_price) + " " + str(datetime.utcfromtimestamp(_time).strftime('%Y-%m-%d %H:%M:%S'))
 
         if _signal == "SELL":
 
             self.Capital = self.Crypto * _price
             self.Capital = self.Capital * self.fee
 
-            print "::::::::::::::::::::::::::::::::::::SELL " + str(_price) 
+            print "::::::::::::::::::::::::::::::::::::SELL " + str(_price)  + " " + str(datetime.utcfromtimestamp(_time).strftime('%Y-%m-%d %H:%M:%S'))
 
             #check if new best/worst trade
             if (((self.Capital / self.capitalBefore) * 100) - 100) > self.highestGain:
