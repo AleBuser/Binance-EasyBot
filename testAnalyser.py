@@ -117,7 +117,7 @@ class testAnalyzer():
 
 
         #plot everything
-        plt.plot(_time,self.prices,'b',label="Price BTC")
+        plt.plot(_time,self.prices,'b',label="Asset Price")
         plt.plot(_time,self.balances,'r',label="Capital")
         plt.legend()
         plt.grid(True)
