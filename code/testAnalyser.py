@@ -57,6 +57,7 @@ class testAnalyzer():
         #init series
         self.balances = pd.DataFrame(columns=['Balance'])
         self.prices = pd.DataFrame(columns=['Price'])
+        self.ProfitMA = pd.DataFrame(columns=["Profir"])
 
     def addToAnalysis(self,_signal,_price, _time):
 
@@ -66,6 +67,8 @@ class testAnalyzer():
         
         #store last price 
         self.lastPrice = _price
+
+        Profit = 0 
 
         #add current Balances to series
         self.balances = self.balances.append({'Balance':max(self.quoteBalance, self.baseBalance * _price)}, ignore_index=True)
@@ -109,13 +112,16 @@ class testAnalyzer():
                 self.highestLost = ((self.quoteBalance / self.quoteBalanceBefore) * 100) - 100
 
             #print profit made on this trade
-            print "Profit on trade: " +  str(((self.quoteBalance / self.quoteBalanceBefore)*100)-100) + "%"
+            Profit = ((self.quoteBalance / self.quoteBalanceBefore)*100)-100
+
+            print "Profit on trade: " +  str(Profit) + "%"
 
             #check if profit is positive or negative and add to list of Good/Bad trades
             if(self.quoteBalance - self.quoteBalanceBefore >= 0) :
                 self.tradesGood.append((( self.quoteBalance / self.quoteBalanceBefore) * 100) - 100);
             else:
                 self.tradesBad.append(((self.quoteBalance / self.quoteBalanceBefore) * 100) - 100)
+        self.ProfitMA = self.ProfitMA.append({'Profit':Profit}, ignore_index=True)
 
 
     def analyze(self, _time):
@@ -133,25 +139,34 @@ class testAnalyzer():
         print "worst trade :" + str(self.highestLost) + "%"
 
         #compute and return number and average of Good/Bad trades
-        summ=0
+        summGood=0
         for l in self.tradesGood:
-            summ+=l
-        print "Avarage good trade :"+ str(summ/len(self.tradesGood)) + "%"
-        print "Number of good trades :"+ str(len(self.tradesGood)) 
-        summ=0
+            summGood+=l
+        print "Avarage good trade: "+ str(summGood/len(self.tradesGood)) + "%"
+        print "Number of good trades: "+ str(len(self.tradesGood)) 
+        summBad=0
         for k in self.tradesBad:
-            summ+=k
-        print "Avarage bad trade :"+ str(summ/len(self.tradesBad)) + "%"
-        print "Number of bad trades :"+ str(len(self.tradesBad))
-
-
+            summBad+=k
+        print "Avarage bad trade: "+ str(summBad/len(self.tradesBad)) + "%"
+        print "Number of bad trades: "+ str(len(self.tradesBad))
+        print "Avarage trade: " + str((summBad+summGood) / (len(self.tradesBad) +len(self.tradesGood))) + "%"
 
         #plot everything
+
+        plt.subplot(211)
         plt.plot(_time,self.prices,'b',label="Asset Price")
         plt.plot(_time,self.balances,'r',label="Capital")
         plt.legend()
         plt.grid(True)
+
+        plt.subplot(212)
+        plt.plot(_time,self.ProfitMA,'y',label="% Profit")
+        plt.legend()
+        plt.grid(True)
+
+        
         plt.show()
+
 
 
 
