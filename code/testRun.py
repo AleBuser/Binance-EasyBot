@@ -58,7 +58,7 @@ analyzer = testAnalyzer(initialBalance,tradingFee )
 for i,Candle0 in Candles.iterrows():
 
     #take current price
-    price = Candle0["Open"]
+    price = Candle0["Close"]
 
     #take current time
     timestamp = Candle0["Open time"]
