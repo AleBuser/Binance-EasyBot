@@ -102,7 +102,7 @@ class testAnalyzer():
             self.quoteBalance = self.quoteBalance * self.fee
 
             #print signal, price and time
-            print "::::::::::::::::::::::::::::::::::::SELL " + str(_price)  + " " + str(datetime.utcfromtimestamp(_time).strftime('%Y-%m-%d %H:%M:%S'))
+            print "::::::::::::::::::::::::::::::::::::SELL " + str(_price)  + " " + str(datetime.fromtimestamp(_time).strftime('%Y-%m-%d %H:%M:%S'))
 
             #check if the percentage of profit is new best/worst, if yes store it as such
             if (((self.quoteBalance / self.quoteBalanceBefore) * 100) - 100) > self.highestGain:
@@ -150,6 +150,7 @@ class testAnalyzer():
         print "Avarage bad trade: "+ str(summBad/len(self.tradesBad)) + "%"
         print "Number of bad trades: "+ str(len(self.tradesBad))
         print "Avarage trade: " + str((summBad+summGood) / (len(self.tradesBad) +len(self.tradesGood))) + "%"
+        print "Number of Trades: "  + str(len(self.tradesBad) +len(self.tradesGood))
 
         #plot everything
 
