@@ -9,7 +9,7 @@ from digest import digester
 from trader import binanceTrader
 from CandleProvider import dataProvider
 
-#Initiate Client connection to Binance with APi Keys
+#Initiate Client connection to Binance with API Keys
 client = Client("KEY_HERE", "KEY_HERE")
 
 #select trading pair and time from whitch to get data
@@ -39,7 +39,7 @@ while True:
         #give new candle to digester to analyze 
         Signal = Strategy.digestCandle(newCandle)
 
-        # printa digested Signala and time 
+        # print digested Signala and time 
         print "----------" + Signal + "----------  " + str(datetime.utcnow() ) 
 
         #if signal is BUY or SELL execute trade
