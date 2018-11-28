@@ -19,11 +19,11 @@ client = Client("", "")
 #chose trading pair, interval and testing start
 pair = 'BTCUSDT'
 interval = '5m'
-analyzeDataFrom = "2018.1.22"
+analyzeDataFrom = "2018.10.25"
 
 #get data from Binance
 print "initiating...."
-coinData = client.get_historical_klines(symbol = pair , interval = interval, start_str = analyzeDataFrom)#, end_str= "2018.1.25")
+coinData = client.get_historical_klines(symbol = pair , interval = interval, start_str = analyzeDataFrom)#, end_str= "2018.5.25")
 
 #format data into table of Candles
 Candles = pd.DataFrame(coinData, columns = ['Open time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Close time', 'Quote asset volume', 'Number of trades', 'Taker buy base asset volume', 'Taker buy quote asset volume', 'Ignore'])
@@ -74,18 +74,21 @@ for i,Candle0 in Candles.iterrows():
     #take current time
     timestamp = Candle0["Open time"]
 
+    #get signal from digesting current Candle
+    Stop, newTrend = Strategy.digestCandle(Candle0)
+
 
     #print Stop-price
 
     signal = "HOLD"
 
-    if Trend == "UP" and Stop >= Candle0["Low"] :
+    if Trend == "UP" and lastStop >= Candle0["Low"] :
         signal = "SELL"
         Trend = "DOWN"
         price = lastStop
 
 
-    elif Trend == "DOWN" and Stop <= Candle0["High"]:
+    elif Trend == "DOWN" and lastStop <= Candle0["High"]:
         signal = "BUY"
         Trend = "UP"
         price = lastStop
@@ -96,8 +99,7 @@ for i,Candle0 in Candles.iterrows():
     analyzer.addToAnalysis(signal, price, timestamp)
 
 
-    #get signal from digesting current Candle
-    Stop, newTrend = Strategy.digestCandle(Candle0)
+    
     #Trend = newTrend
     Stop = float(Stop)
     lastStop = Stop

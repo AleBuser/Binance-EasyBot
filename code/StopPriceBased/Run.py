@@ -27,7 +27,7 @@ Strategy = digester(client, pair, interval, True)
 
 Trader = binanceTrader(client, pair)
 #last param: return Candles 3 seconds before candele close
-Connection = dataProvider(client, pair, interval, 2)
+Connection = dataProvider(client, pair, interval, 1)
 
 Stop = 0
 
@@ -52,11 +52,9 @@ while True:
             Stop, Signal = Strategy.digestCandle(newCandle)
             Stop = float(Stop)
 
+            print "Order to "+ Signal +" be placed at: " + str(Stop)
             Trader.tradeSignal(Signal,Stop)
 
-            # print a digested Signala and time 
-            print "---------- NEW "+ Signal + " ORDER SET AT: " + str(Stop) + "----------  " + str(datetime.utcnow() ) 
-            #print "---------- TREND IS " + str(Trend) + "----------  "
             lastCandleOpenTime = newCandle["Open time"]
         else:
             print "blocket a duble Candle"

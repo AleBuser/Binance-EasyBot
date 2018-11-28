@@ -18,7 +18,7 @@ class dataProvider:
     frontRun = 0
 
     # integer time at which Candle closes
-    nextCandleOpens = 0
+    lastCandleOpen = 0
 
     client = None
 
@@ -64,29 +64,18 @@ class dataProvider:
 
         lastPrice = self.getLastPrice()
 
-        currentTime  = int(time.time())
-
-        #can print time until next candle
-        #print ( self.nextCandleOpens - currentTime )
-
-         #if current candle closed 
-        if currentTime >= self.nextCandleOpens:
-
-            # get new closing time of new candle
-            self.nextCandleOpens = int(self.getCurrentCandle()["Open time"] / 1000) + self.intervalInSeconds 
+        
+        #get and return current candle
+        currentCandle = self.getCurrentCandle()
 
         #if current candle is closing
-        if currentTime + self.frontRun == self.nextCandleOpens :
-
-            #get and return current candle
-            currentCandle = self.getCurrentCandle()
+        if currentCandle["Open time"]!=self.lastCandleOpen:
+            self.lastCandleOpen = currentCandle["Open time"]
             return currentCandle, lastPrice
-
-       
-
-
-        #if no new candle return empty series
-        return pd.Series([]), lastPrice
+        else:
+            #if no new candle return empty series
+            self.lastCandleOpen = currentCandle["Open time"]
+            return pd.Series([]), lastPrice
 
 
 
