@@ -11,7 +11,7 @@ sys.path.insert(0, 'strategies')
 
 from digest import digester
 from trader import binanceTrader
-from CandleProviderV2 import dataProvider
+from CandleProvider import dataProvider
 
 #Initiate Client connection to Binance
 client = Client("KEY", "KEY")
