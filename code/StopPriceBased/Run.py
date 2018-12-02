@@ -11,21 +11,21 @@ sys.path.insert(0, 'strategies')
 
 from digest import digester
 from trader import binanceTrader
-from CandleProvider import dataProvider
+from CandleProviderV2 import dataProvider
 
 #Initiate Client connection to Binance
 client = Client("KEY", "KEY")
 
 #select trading pair and time from whitch to get data
 pair  = "BTCUSDT"
-interval  = "5m"
+interval  = "15m"
 
 #init the libraries
 
 # last param:  True is Production, False is TEST 
 Strategy = digester(client, pair, interval, True) 
 
-Trader = binanceTrader(client, pair)
+Trader = binanceTrader(client, pair, Strategy.Trend )
 #last param: return Candles 3 seconds before candele close
 Connection = dataProvider(client, pair, interval, 1)
 
@@ -53,7 +53,7 @@ while True:
             Stop = float(Stop)
 
             print "Order to "+ Signal +" be placed at: " + str(Stop)
-            Trader.tradeSignal(Signal,Stop)
+            order = Trader.tradeSignal(Signal,Stop)
 
             lastCandleOpenTime = newCandle["Open time"]
         else:
