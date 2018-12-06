@@ -55,7 +55,8 @@ class testAnalyzer():
         self.tradesBad=[];
 
         #init series
-        self.balances = pd.DataFrame(columns=['Balance'])
+        self.BaseBalances = pd.DataFrame(columns=['Base'])
+        self.QuoteBalances = pd.DataFrame(columns=['Quote'])
         self.prices = pd.DataFrame(columns=['Price'])
         self.ProfitMA = pd.DataFrame(columns=["Profir"])
 
@@ -71,7 +72,8 @@ class testAnalyzer():
         Profit = 0 
 
         #add current Balances to series
-        self.balances = self.balances.append({'Balance':max(self.quoteBalance, self.baseBalance * _price)}, ignore_index=True)
+        self.QuoteBalances = self.QuoteBalances.append({'Quote':max(self.quoteBalance, self.baseBalance * _price)}, ignore_index=True)
+        self.BaseBalances = self.BaseBalances.append({'Base': self.baseBalance}, ignore_index=True)
         self.prices = self.prices.append({'Price':_price}, ignore_index=True)
 
         #if signal is BUY simulate a buy order 
@@ -130,7 +132,7 @@ class testAnalyzer():
         _price = self.lastPrice
 
         #print analytics gained by using list of Good/Bad trades, 
-        print "Starts with " + str(self.StartingBalance) + ", ends with: " + str(_price * self.baseBalance)
+        print "Starts with " + str(self.StartingBalance) + ", ends with: " + str(_price * self.baseBalance) + " / " + str(self.baseBalance) 
         print "Buy-and-Hold strategy ends with: " + str(_price * (self.StartingBalance / self.FirstPrice));
         print "Profit :" + str(((( _price * self.baseBalance) / self.StartingBalance)* 100)) + "%"
         print "Net-Profit :" + str(((( _price * self.baseBalance) / self.StartingBalance)* 100)- 100) + "%"
@@ -153,10 +155,13 @@ class testAnalyzer():
         print "Number of Trades: "  + str(len(self.tradesBad) +len(self.tradesGood))
 
         #plot everything
+        maxBalance = self.QuoteBalances["Quote"].min()
+        self.BaseBalances["Base"]  = self.BaseBalances["Base"]  * maxBalance
 
         plt.subplot(211)
         plt.plot(_time,self.prices,'b',label="Asset Price")
-        plt.plot(_time,self.balances,'r',label="Capital")
+        plt.plot(_time,self.QuoteBalances["Quote"],'r',label="Capital")
+        plt.plot(_time,self.BaseBalances["Base"],'g',label="Crypto")
         plt.legend()
         plt.grid(True)
 
