@@ -34,7 +34,9 @@ class testAnalyzer():
     balances = []
     prices = []
 
-    def __init__(self,_capital,_fee):
+    showProfit = True
+
+    def __init__(self,_capital,_fee, _showProfit):
 
         self.fee = _fee
 
@@ -53,6 +55,8 @@ class testAnalyzer():
 
         self.tradesGood=[];
         self.tradesBad=[];
+
+        self.showProfit = _showProfit
 
         #init series
         self.BaseBalances = pd.DataFrame(columns=['Base'])
@@ -73,7 +77,7 @@ class testAnalyzer():
 
         #add current Balances to series
         self.QuoteBalances = self.QuoteBalances.append({'Quote':max(self.quoteBalance, self.baseBalance * _price)}, ignore_index=True)
-        self.BaseBalances = self.BaseBalances.append({'Base': self.baseBalance}, ignore_index=True)
+        self.BaseBalances = self.BaseBalances.append({'Base': max(self.baseBalance, self.quoteBalance / _price)}, ignore_index=True)
         self.prices = self.prices.append({'Price':_price}, ignore_index=True)
 
         #if signal is BUY simulate a buy order 
@@ -84,7 +88,6 @@ class testAnalyzer():
 
             
             self.baseBalance = self.quoteBalance / _price
-            self.quoteBalance = 0;
 
             #subtract percentage fee
             self.baseBalance = self.baseBalance * self.fee
@@ -154,22 +157,40 @@ class testAnalyzer():
         print "Avarage trade: " + str((summBad+summGood) / (len(self.tradesBad) +len(self.tradesGood))) + "%"
         print "Number of Trades: "  + str(len(self.tradesBad) +len(self.tradesGood))
 
-        #plot everything
-        maxBalance = self.QuoteBalances["Quote"].min()
-        self.BaseBalances["Base"]  = self.BaseBalances["Base"]  * maxBalance
 
-        plt.subplot(211)
-        plt.plot(_time,self.prices,'b',label="Asset Price")
-        plt.plot(_time,self.QuoteBalances["Quote"],'r',label="Capital")
-        plt.plot(_time,self.BaseBalances["Base"],'g',label="Crypto")
-        plt.legend()
-        plt.grid(True)
 
-        plt.subplot(212)
-        plt.plot(_time,self.ProfitMA,'y',label="% Profit")
-        plt.legend()
-        plt.grid(True)
 
+        if self.showProfit == True:
+
+            plt.subplot(211)
+            plt.plot(_time,self.prices,'b',label="Asset Price")
+            plt.plot(_time,self.QuoteBalances["Quote"],'r',label="Capital")
+            plt.plot(_time,self.BaseBalances["Base"],'g',label="Crypto")
+            plt.legend()
+
+            plt.grid(True)
+            plt.subplot(212)
+            plt.plot(_time,self.ProfitMA,'y',label="% Profit")
+            plt.legend()
+            plt.grid(True)
+
+        else: 
+            fig, ax1 = plt.subplots()
+
+            color = 'tab:red'
+            ax1.set_xlabel('time (s)')
+            ax1.plot(_time,self.prices,'b',label="Asset Price")
+            ax1.plot(_time,self.QuoteBalances["Quote"],'r',label="Capital")
+            ax1.tick_params(axis='y', labelcolor=color)
+            ax1.legend()
+
+            ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+            color = 'tab:green'
+            ax2.plot(_time,self.BaseBalances["Base"],'g',label="Crypto")
+            ax2.tick_params(axis='y', labelcolor=color)
+            ax2.legend()
+            fig.tight_layout()  # otherwise the right y-label is slightly clipped
         
         plt.show()
 
