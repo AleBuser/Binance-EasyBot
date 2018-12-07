@@ -52,7 +52,7 @@ initialBalance = Candles["Open"][0]
 tradingFee = 1 - 0.00075 # 0.99925
 
 #init analyzer with first price and trading fee 
-analyzer = testAnalyzer(initialBalance,tradingFee )
+analyzer = testAnalyzer(initialBalance,tradingFee, True )
 
 #start looping throu Candles
 for i,Candle0 in Candles.iterrows():
