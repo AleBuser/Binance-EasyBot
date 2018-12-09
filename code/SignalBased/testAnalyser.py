@@ -36,7 +36,7 @@ class testAnalyzer():
 
     showProfit = True
 
-    def __init__(self,_capital,_fee, _showProfit):
+    def __init__(self,_capital,_fee, _showProfit, _showCrypto):
 
         self.fee = _fee
 
@@ -57,6 +57,7 @@ class testAnalyzer():
         self.tradesBad=[];
 
         self.showProfit = _showProfit
+        self.showCrypto = _showCrypto
 
         #init series
         self.BaseBalances = pd.DataFrame(columns=['Base'])
@@ -184,13 +185,14 @@ class testAnalyzer():
             ax1.tick_params(axis='y', labelcolor=color)
             ax1.legend()
 
-            ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+            if self.showCrypto == True:
+                ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
-            color = 'tab:green'
-            ax2.plot(_time,self.BaseBalances["Base"],'g',label="Crypto")
-            ax2.tick_params(axis='y', labelcolor=color)
-            ax2.legend()
-            fig.tight_layout()  # otherwise the right y-label is slightly clipped
+                color = 'tab:green'
+                ax2.plot(_time,self.BaseBalances["Base"],'g',label="Crypto")
+                ax2.tick_params(axis='y', labelcolor=color)
+                ax2.legend()
+                fig.tight_layout()  # otherwise the right y-label is slightly clipped
         
         plt.show()
 
