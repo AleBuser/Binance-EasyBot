@@ -51,8 +51,8 @@ initialBalance = Candles["Open"][0]
 #set trading fee multiplyer
 tradingFee = 1 - 0.00075 # 0.99925
 
-#init analyzer with first price and trading fee 
-analyzer = testAnalyzer(initialBalance,tradingFee, True )
+#init analyzer with first price and trading fee, First Bool is for showing % Profit n trades, second is to show Quote asset 
+analyzer = testAnalyzer(initialBalance,tradingFee, True, True )
 
 #start looping throu Candles
 for i,Candle0 in Candles.iterrows():
